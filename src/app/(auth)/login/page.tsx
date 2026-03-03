@@ -8,20 +8,17 @@ import { useAuth } from "@/context/AuthContext";
 export default function LoginPage() {
     const router = useRouter();
     const { signIn } = useAuth();
-    const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [errors, setErrors] = useState({ email: "", password: "", general: "" });
+    const [errors, setErrors] = useState({ username: "", password: "", general: "" });
     const [isLoading, setIsLoading] = useState(false);
 
     const validateForm = () => {
-        const newErrors = { email: "", password: "", general: "" };
+        const newErrors = { username: "", password: "", general: "" };
         let isValid = true;
 
-        if (!email.trim()) {
-            newErrors.email = "Email is required";
-            isValid = false;
-        } else if (!/\S+@\S+\.\S+/.test(email)) {
-            newErrors.email = "Please enter a valid email";
+        if (!username.trim()) {
+            newErrors.username = "Username is required";
             isValid = false;
         }
 
@@ -42,9 +39,9 @@ export default function LoginPage() {
 
         if (validateForm()) {
             setIsLoading(true);
-            setErrors({ email: "", password: "", general: "" });
+            setErrors({ username: "", password: "", general: "" });
 
-            const { error } = await signIn(email, password);
+            const { error } = await signIn(username, password);
 
             if (error) {
                 setErrors((prev) => ({ ...prev, general: error }));
@@ -71,21 +68,21 @@ export default function LoginPage() {
 
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                    <label htmlFor="email" className="block text-sm font-medium mb-2">
-                        EMAIL
+                    <label htmlFor="username" className="block text-sm font-medium mb-2">
+                        USERNAME
                     </label>
                     <input
-                        type="email"
-                        id="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-accent ${errors.email ? "border-red-500" : "border-gray-300"
+                        type="text"
+                        id="username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-accent ${errors.username ? "border-red-500" : "border-gray-300"
                             }`}
-                        placeholder="Enter your email"
+                        placeholder="Enter your username"
                         disabled={isLoading}
                     />
-                    {errors.email && (
-                        <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+                    {errors.username && (
+                        <p className="mt-1 text-sm text-red-500">{errors.username}</p>
                     )}
                 </div>
 

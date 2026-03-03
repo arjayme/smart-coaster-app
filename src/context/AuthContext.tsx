@@ -8,12 +8,17 @@ interface AuthContextType {
     user: User | null;
     session: Session | null;
     loading: boolean;
-    signUp: (email: string, password: string, username: string) => Promise<{ error: string | null }>;
-    signIn: (email: string, password: string) => Promise<{ error: string | null }>;
+    signUp: (username: string, password: string) => Promise<{ error: string | null }>;
+    signIn: (username: string, password: string) => Promise<{ error: string | null }>;
     signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+// Convert username to a fake email for Supabase (it requires email internally)
+function usernameToEmail(username: string): string {
+    return `${username.toLowerCase().trim()}@smartcoaster.app`;
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
@@ -21,14 +26,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Get initial session
         supabase.auth.getSession().then(({ data: { session } }) => {
             setSession(session);
             setUser(session?.user ?? null);
             setLoading(false);
         });
 
-        // Listen for auth changes
         const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
             setSession(session);
             setUser(session?.user ?? null);
@@ -38,7 +41,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return () => subscription.unsubscribe();
     }, []);
 
-    const signUp = async (email: string, password: string, username: string) => {
+    const signUp = async (username: string, password: string) => {
+        const email = usernameToEmail(username);
         const { error } = await supabase.auth.signUp({
             email,
             password,
@@ -46,16 +50,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 data: { username },
             },
         });
-        if (error) return { error: error.message };
+        if (error) {
+            if (error.message.includes("already registered")) {
+                return { error: "Username is already taken" };
+            }
+            return { error: error.message };
+        }
         return { error: null };
     };
 
-    const signIn = async (email: string, password: string) => {
+    const signIn = async (username: string, password: string) => {
+        const email = usernameToEmail(username);
         const { error } = await supabase.auth.signInWithPassword({
             email,
             password,
         });
-        if (error) return { error: error.message };
+        if (error) {
+            if (error.message.includes("Invalid login credentials")) {
+                return { error: "Invalid username or password" };
+            }
+            return { error: error.message };
+        }
         return { error: null };
     };
 

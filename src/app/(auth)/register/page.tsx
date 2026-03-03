@@ -8,31 +8,20 @@ import { useAuth } from "@/context/AuthContext";
 export default function RegisterPage() {
     const router = useRouter();
     const { signUp } = useAuth();
-    const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [errors, setErrors] = useState({
-        email: "",
         username: "",
         password: "",
         confirmPassword: "",
         general: "",
     });
     const [isLoading, setIsLoading] = useState(false);
-    const [successMessage, setSuccessMessage] = useState("");
 
     const validateForm = () => {
-        const newErrors = { email: "", username: "", password: "", confirmPassword: "", general: "" };
+        const newErrors = { username: "", password: "", confirmPassword: "", general: "" };
         let isValid = true;
-
-        if (!email.trim()) {
-            newErrors.email = "Email is required";
-            isValid = false;
-        } else if (!/\S+@\S+\.\S+/.test(email)) {
-            newErrors.email = "Please enter a valid email";
-            isValid = false;
-        }
 
         if (!username.trim()) {
             newErrors.username = "Username is required";
@@ -64,16 +53,15 @@ export default function RegisterPage() {
 
         if (validateForm()) {
             setIsLoading(true);
-            setErrors({ email: "", username: "", password: "", confirmPassword: "", general: "" });
+            setErrors({ username: "", password: "", confirmPassword: "", general: "" });
 
-            const { error } = await signUp(email, password, username);
+            const { error } = await signUp(username, password);
 
             if (error) {
                 setErrors((prev) => ({ ...prev, general: error }));
                 setIsLoading(false);
             } else {
-                setSuccessMessage("Account created! Check your email to confirm, then log in.");
-                setIsLoading(false);
+                router.push("/tracker");
             }
         }
     };
@@ -92,32 +80,7 @@ export default function RegisterPage() {
                 </div>
             )}
 
-            {successMessage && (
-                <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-md text-green-600 text-sm text-center">
-                    {successMessage}
-                </div>
-            )}
-
             <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                    <label htmlFor="email" className="block text-sm font-medium mb-2">
-                        EMAIL
-                    </label>
-                    <input
-                        type="email"
-                        id="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-accent ${errors.email ? "border-red-500" : "border-gray-300"
-                            }`}
-                        placeholder="Enter your email"
-                        disabled={isLoading}
-                    />
-                    {errors.email && (
-                        <p className="mt-1 text-sm text-red-500">{errors.email}</p>
-                    )}
-                </div>
-
                 <div>
                     <label htmlFor="username" className="block text-sm font-medium mb-2">
                         USERNAME
