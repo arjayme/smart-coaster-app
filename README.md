@@ -3,7 +3,9 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 ## Getting Started
 
 First, insert this code into the command prompt:
+```bash
 npm install
+```
 
 Then, run the development server:
 
