@@ -1,7 +1,12 @@
+"use client";
+
 import Link from "next/link";
 import { Search, Lightbulb } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Home() {
+    const { user, loading } = useAuth();
+
     return (
         <div className="flex flex-col gap-16 pb-16">
             {/* Hero Section */}
@@ -58,10 +63,10 @@ export default function Home() {
                     Join thousands of users improving their hydration habits.
                 </p>
                 <Link
-                    href="/login" // Directs to Login as per original logic for unauth users
+                    href={loading ? "#" : user ? "/tracker" : "/login"}
                     className="inline-block px-8 py-3 bg-accent text-secondary rounded-md font-semibold hover:bg-[#0097a7] transition-colors"
                 >
-                    Start Tracking
+                    {loading ? "Loading..." : "Start Tracking"}
                 </Link>
             </section>
         </div>
