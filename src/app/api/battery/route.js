@@ -1,18 +1,49 @@
-let latestBattery = null;
+// import { NextResponse } from "next/server";
 
-export async function POST(request) {
+// let latestBattery = null;
 
-  const data = await request.json();
-  latestBattery = data.battery_percent;
+// export async function POST(request) {
+//   const data = await request.json();
 
-  return Response.json({ status: "received" });
+//   latestBattery = data.battery_percent;
 
-}
+//   return NextResponse.json({ status: "received" });
+// }
 
-export async function GET() {
+// export async function GET() {
 
-  return Response.json({
-    battery_percent: latestBattery
-  });
+//   const { data, error } = await supabase
+//     .from("sensor_data")
+//     .select("battery_percent")
+//     .order("created_at", { ascending: false })
+//     .limit(1);
 
-}
+//   if (error) {
+//     return NextResponse.json({ battery_percent: null });
+//   }
+
+//   return NextResponse.json({
+//     battery_percent: data[0]?.battery_percent ?? null
+//   });
+
+// }
+
+// // let latestBattery = null;
+
+// // export async function POST(request) {
+
+// //   const data = await request.json();
+// //   latestBattery = data.battery_percent;
+
+// //   return Response.json({ status: "received" });
+
+// // }
+
+// // export async function GET() {
+
+// //   return Response.json({
+// //     battery_percent: latestBattery
+// //   });
+
+// // }
+

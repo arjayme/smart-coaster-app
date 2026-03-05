@@ -23,7 +23,7 @@ export async function POST(request) {
 
     return NextResponse.json({
       status: "success",
-      message: "Data storedd"
+      message: "Data stored"
     });
 
   } catch (err) {

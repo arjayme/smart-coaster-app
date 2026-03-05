@@ -33,21 +33,68 @@ export default function TrackerPage() {
     //Battery percent part
     // const [batteryPercent, setBatteryPercent] = useState<number | null>(null);
 
-    // async function getBattery() {
-    //     const res = await fetch("/api/battery");
-    //     const data = await res.json();
-    //     return data.battery_percent;
+    // async function getBatteryRealtime() {
+    // const res = await fetch("/api/battery");
+    // const data = await res.json();
+    // return data.battery_percent;
+    // }
+
+    // async function getBatteryFromDB() {
+    // const res = await fetch("/api/esp32");
+    // if (!res.ok) return null;
+    // const data = await res.json();
+    // return data.battery_percent;
     // }
 
     // useEffect(() => {
-    //     const interval = setInterval(async () => {
-    //     const battery = await getBattery();
-    //     setBatteryPercent(battery);
-    //     }, 5000);
 
-    //     return () => clearInterval(interval);
+    // const interval = setInterval(async () => {
+
+    //     let battery = await getBatteryRealtime();
+
+    //     if (battery === null) {
+    //     battery = await getBatteryFromDB();
+    //     }
+
+    //     setBatteryPercent(battery);
+
+    // }, 5000);
+
+    // return () => clearInterval(interval);
+
     // }, []);
     //
+
+    async function getLastBatteryFromDB() {
+
+    const { data, error } = await supabase
+        .from("sensor_data")
+        .select("battery_percent")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .single();
+
+    if (error) {
+        console.error(error);
+        return null;
+    }
+
+    return data?.battery_percent ?? null;
+    }
+
+    const [batteryPercent, setBatteryPercent] = useState<number | null>(null);
+
+    useEffect(() => {
+
+    async function loadBattery() {
+        const battery = await getLastBatteryFromDB();
+        setBatteryPercent(battery);
+    }
+
+    loadBattery();
+
+    }, []);
+
 
     const parseEspTime = (timeStr: string) => {
         try {
@@ -344,6 +391,10 @@ export default function TrackerPage() {
                             <div className="flex justify-between">
                                 <span className="text-text-light">Streak:</span>
                                 <span className="font-semibold">{streakDays} {streakDays <= 1 ? "day" : "days"}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-text-light">Battery last recorded:</span>
+                                <span className="font-semibold">{batteryPercent}%</span>
                             </div>
                         </div>
                     </section>
