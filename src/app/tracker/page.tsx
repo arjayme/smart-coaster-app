@@ -296,7 +296,7 @@ export default function TrackerPage() {
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <header className="flex justify-between items-center mb-8">
-                    <Link href="/" className="text-accent hover:underline">
+                    <Link href="/" className="text hover:underline">
                         &lt; Home Page
                     </Link>
                     <h1 className="text-3xl font-bold text-text-main">Water Consumption</h1>
@@ -312,7 +312,7 @@ export default function TrackerPage() {
                 <main className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Stats Card */}
                     <section className="bg-secondary p-6 rounded-xl shadow-sm">
-                        <h2 className="text-xl font-bold mb-4 text-accent">Stats</h2>
+                        <h2 className="text-xl font-bold mb-4 text">Stats</h2>
                         <div className="space-y-3">
                             <div className="flex justify-between">
                                 <span className="text-text-light">Last drink:</span>
@@ -331,7 +331,7 @@ export default function TrackerPage() {
 
                     {/* Current Status (Circular Progress) */}
                     <section className="bg-secondary p-6 rounded-xl shadow-sm flex flex-col items-center">
-                        <h2 className="text-xl font-bold mb-6 text-accent">Current Status</h2>
+                        <h2 className="text-xl font-bold mb-6 text">Current Status</h2>
                         <div className="relative w-48 h-48 mb-4">
                             <svg className="w-full h-full transform -rotate-90">
                                 <circle
@@ -372,7 +372,7 @@ export default function TrackerPage() {
 
                     {/* Daily Intake Chart */}
                     <section className="bg-secondary p-6 rounded-xl shadow-sm lg:col-span-2">
-                        <h2 className="text-xl font-bold mb-4 text-accent">Daily Intake</h2>
+                        <h2 className="text-xl font-bold mb-4 text">Daily Intake</h2>
                         <div className="h-48 w-full -ml-4">
                             <ResponsiveContainer width="100%" height="100%">
                                 <LineChart data={dailyData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
@@ -388,7 +388,7 @@ export default function TrackerPage() {
 
                     {/* Weekly Progress Chart */}
                     <section className="bg-secondary p-6 rounded-xl shadow-sm lg:col-span-2">
-                        <h2 className="text-xl font-bold mb-4 text-accent">Weekly Progress</h2>
+                        <h2 className="text-xl font-bold mb-4 text">Weekly Progress</h2>
                         <div className="h-48 w-full -ml-4">
                             <ResponsiveContainer width="100%" height="100%">
                                 <LineChart data={weeklyData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
@@ -405,7 +405,7 @@ export default function TrackerPage() {
                     {/* Monthly Progress (Heatmap) */}
                     <section className="bg-secondary p-6 rounded-xl shadow-sm lg:col-span-2">
                         <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-xl font-bold text-accent">Monthly Progress</h2>
+                            <h2 className="text-xl font-bold text">Monthly Progress</h2>
                             <span className="text-sm text-text-light">{heatmapDataInfo.label}</span>
                         </div>
                         <div className="grid grid-cols-7 gap-2">
