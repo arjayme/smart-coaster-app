@@ -5,22 +5,25 @@ export async function POST(request) {
   try {
     const data = await request.json();
 
-    const { esp_time, consumption } = data;
+    const { esp_time, consumption, battery_percent } = data;
 
     const { error } = await supabase
       .from("sensor_data")
       .insert([
         {
           esp_time: esp_time,
-          consumption: consumption
+          consumption: consumption,
+          battery_percent: battery_percent
         }
       ]);
-
+    
+    console.log([data,esp_time,consumption,battery_percent])
+      
     if (error) throw error;
 
     return NextResponse.json({
       status: "success",
-      message: "Data stored"
+      message: "Data storedd"
     });
 
   } catch (err) {

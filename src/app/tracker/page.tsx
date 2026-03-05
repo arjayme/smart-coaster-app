@@ -30,6 +30,25 @@ export default function TrackerPage() {
 
     const percentGoal = Math.round((currentIntake / dailyGoal) * 100);
 
+    //Battery percent part
+    // const [batteryPercent, setBatteryPercent] = useState<number | null>(null);
+
+    // async function getBattery() {
+    //     const res = await fetch("/api/battery");
+    //     const data = await res.json();
+    //     return data.battery_percent;
+    // }
+
+    // useEffect(() => {
+    //     const interval = setInterval(async () => {
+    //     const battery = await getBattery();
+    //     setBatteryPercent(battery);
+    //     }, 5000);
+
+    //     return () => clearInterval(interval);
+    // }, []);
+    //
+
     const parseEspTime = (timeStr: string) => {
         try {
             const [datePart, timePart] = timeStr.split(" ");
