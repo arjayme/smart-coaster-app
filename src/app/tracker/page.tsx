@@ -32,21 +32,7 @@ export default function TrackerPage() {
     const [batteryPercent, setBatteryPercent] = useState<number | null>(null);
 
     const percentGoal = Math.round((currentIntake / dailyGoal) * 100);
-
-    useEffect(() => {
-    async function loadBattery() {
-        const { data } = await supabase
-        .from("sensor_data")
-        .select("battery_percent")
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .single();
-
-        if (data) setBatteryPercent(data.battery_percent);
-    }
-
-    loadBattery();
-    }, []);    
+   
 
     //Battery percent part
     // const [batteryPercent, setBatteryPercent] = useState<number | null>(null);
@@ -130,7 +116,6 @@ export default function TrackerPage() {
                     // Update main data cache safely
                     setSensorData((prev) => {
                         if (payload.eventType === "INSERT") {
-                            setBatteryPercent(payload.new.battery_percent);
                             return [...prev, payload.new as SensorData];
                         } else if (payload.eventType === "UPDATE") {
                             return prev.map(item => item.id === payload.new.id ? (payload.new as SensorData) : item);
@@ -193,6 +178,19 @@ export default function TrackerPage() {
             } else {
                 setLastDrinkText('Just now');
             }
+
+        async function loadBattery() {
+            const { data } = await supabase
+            .from("sensor_data")
+            .select("battery_percent")
+            .order("created_at", { ascending: false })
+            .limit(1)
+            .single();
+
+            if (data) setBatteryPercent(data.battery_percent);
+        }
+        loadBattery();
+
         }
 
         // --- 3. Calculate Streak ---
