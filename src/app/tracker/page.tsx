@@ -13,6 +13,7 @@ interface SensorData {
     created_at: string;
     esp_time: string;
     consumption: number;
+    battery_percent: number;
 }
 
 export default function TrackerPage() {
@@ -25,10 +26,27 @@ export default function TrackerPage() {
     // Data states
     const [sensorData, setSensorData] = useState<SensorData[]>([]);
     const [currentIntake, setCurrentIntake] = useState(0);
+    const [lastDrinkAmount, setLastDrinkAmount] = useState<number | null>(null);
     const [lastDrinkText, setLastDrinkText] = useState("No data yet");
     const [streakDays, setStreakDays] = useState(0);
+    const [batteryPercent, setBatteryPercent] = useState<number | null>(null);
 
     const percentGoal = Math.round((currentIntake / dailyGoal) * 100);
+
+    useEffect(() => {
+    async function loadBattery() {
+        const { data } = await supabase
+        .from("sensor_data")
+        .select("battery_percent")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .single();
+
+        if (data) setBatteryPercent(data.battery_percent);
+    }
+
+    loadBattery();
+    }, []);    
 
     //Battery percent part
     // const [batteryPercent, setBatteryPercent] = useState<number | null>(null);
@@ -64,37 +82,6 @@ export default function TrackerPage() {
 
     // }, []);
     //
-
-    async function getLastBatteryFromDB() {
-
-    const { data, error } = await supabase
-        .from("sensor_data")
-        .select("battery_percent")
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .single();
-
-    if (error) {
-        console.error(error);
-        return null;
-    }
-
-    return data?.battery_percent ?? null;
-    }
-
-    const [batteryPercent, setBatteryPercent] = useState<number | null>(null);
-
-    useEffect(() => {
-
-    async function loadBattery() {
-        const battery = await getLastBatteryFromDB();
-        setBatteryPercent(battery);
-    }
-
-    loadBattery();
-
-    }, []);
-
 
     const parseEspTime = (timeStr: string) => {
         try {
@@ -143,6 +130,7 @@ export default function TrackerPage() {
                     // Update main data cache safely
                     setSensorData((prev) => {
                         if (payload.eventType === "INSERT") {
+                            setBatteryPercent(payload.new.battery_percent);
                             return [...prev, payload.new as SensorData];
                         } else if (payload.eventType === "UPDATE") {
                             return prev.map(item => item.id === payload.new.id ? (payload.new as SensorData) : item);
@@ -194,6 +182,7 @@ export default function TrackerPage() {
             const diffMinutes = Math.floor(diffMs / 60000);
             const diffHours = Math.floor(diffMinutes / 60);
             const diffDays = Math.floor(diffHours / 24);
+            setLastDrinkAmount(mostRecentData.consumption);
 
             if (diffDays > 0) {
                 setLastDrinkText(`${diffDays} day${diffDays > 1 ? 's' : ''} ago`);
@@ -381,19 +370,23 @@ export default function TrackerPage() {
                         <h2 className="text-xl font-bold mb-4 text">Stats</h2>
                         <div className="space-y-3">
                             <div className="flex justify-between">
-                                <span className="text-text-light">Last drink:</span>
-                                <span className="font-semibold">{lastDrinkText}</span>
-                            </div>
-                            <div className="flex justify-between">
                                 <span className="text-text-light">% to goal:</span>
                                 <span className="font-semibold">{Math.min(percentGoal, 100)}%</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-text-light">Last Drink Amount:</span>
+                                <span className="font-semibold">{lastDrinkAmount} ml</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-text-light">Last Drink Time:</span>
+                                <span className="font-semibold">{lastDrinkText}</span>
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-text-light">Streak:</span>
                                 <span className="font-semibold">{streakDays} {streakDays <= 1 ? "day" : "days"}</span>
                             </div>
                             <div className="flex justify-between">
-                                <span className="text-text-light">Battery last recorded:</span>
+                                <span className="text-text-light">Battery Last Recorded:</span>
                                 <span className="font-semibold">{batteryPercent}%</span>
                             </div>
                         </div>
