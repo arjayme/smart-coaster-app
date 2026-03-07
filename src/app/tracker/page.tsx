@@ -419,7 +419,7 @@ export default function TrackerPage() {
                             </div>
                         </div>
                         <div className="text-center mb-4">
-                            <span className="text-2xl font-bold">{currentIntake}</span> mL /{" "}
+                            <span className="text-2xl font-bold">{currentIntake.toFixed(1)}</span> mL /{" "}
                             <span className="text-xl">{dailyGoal}</span> mL
                         </div>
                         <button
