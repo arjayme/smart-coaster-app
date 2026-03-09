@@ -31,8 +31,8 @@ export default function Home() {
                     <div className="flex-1 w-full max-w-sm md:max-w-md flex justify-center items-center">
                         {/* Placeholder Image */}
                         <div className="w-full h-[300px] bg-[#b2ebf2] rounded-xl border-2 border-dashed border-accent flex justify-center items-center text-accent text-lg font-medium">
-                            Product Image Placeholder
-                            {/* <img src="your-image-url.jpg" alt="Smart_Coaster" className="w-full h-full object-cover" /> */}
+                            {/*Product Image Placeholder*/}
+                            <img src="/Doraemon_character.png" alt="Smart_Coaster" className="w-full h-full object-contain" /> {/*or object-cover*/}
                         </div>
                     </div>
                 </div>

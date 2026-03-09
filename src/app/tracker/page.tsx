@@ -154,7 +154,7 @@ export default function TrackerPage() {
             uniqueDaysSet.add(itemDateString);
 
             if (itemDateString === todayStr) {
-                todaySum += item.consumption;
+                todaySum = Math.round(todaySum + item.consumption);
             }
         });
         setCurrentIntake(todaySum);
@@ -167,7 +167,7 @@ export default function TrackerPage() {
             const diffMinutes = Math.floor(diffMs / 60000);
             const diffHours = Math.floor(diffMinutes / 60);
             const diffDays = Math.floor(diffHours / 24);
-            setLastDrinkAmount(mostRecentData.consumption);
+            setLastDrinkAmount(Math.round(mostRecentData.consumption));
 
             if (diffDays > 0) {
                 setLastDrinkText(`${diffDays} day${diffDays > 1 ? 's' : ''} ago`);
@@ -250,7 +250,7 @@ export default function TrackerPage() {
             const itemDate = parseEspTime(item.esp_time);
             if (itemDate.toLocaleDateString('en-US') === todayStr) {
                 const index = itemDate.getHours();
-                if (index >= 0 && index < 24) intervals[index].value += item.consumption;
+                if (index >= 0 && index < 24) intervals[index].value = Math.round(intervals[index].value + item.consumption);
             }
         });
         return intervals;
@@ -283,7 +283,7 @@ export default function TrackerPage() {
             if (itemDate >= monday && itemDate <= sunday) {
                 const d = itemDate.getDay();
                 const index = d === 0 ? 6 : d - 1;
-                days[index].value += item.consumption;
+                days[index].value = Math.round(days[index].value + item.consumption);
             }
         });
         return days;
